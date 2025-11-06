@@ -1,5 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/core/components/Button';
+import { Board } from '@/domain/game/components/Board';
+import { useGameStore } from '@/domain/game/stores/gameStore';
 import type { GamePageProps } from './types';
 
 /**
@@ -14,12 +16,21 @@ import type { GamePageProps } from './types';
  * - Params: none
  * - Query: none
  * - Guards: none
+ *
+ * @layout
+ * - Layout: RootLayout
+ * - Sections: Header, Board, Actions
  */
 export const GamePage = (props: GamePageProps) => {
   const navigate = useNavigate();
+  const { currentPlayer, resetGame } = useGameStore();
 
   const handleBackHome = () => {
     navigate('/');
+  };
+
+  const handleResetGame = () => {
+    resetGame();
   };
 
   return (
@@ -28,28 +39,19 @@ export const GamePage = (props: GamePageProps) => {
         <div className="text-center">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">Jogo da Velha</h1>
           <p className="text-lg text-gray-600">
-            Vez do jogador: <span className="font-bold">X</span>
+            Vez do jogador: <span className="font-bold">{currentPlayer}</span>
           </p>
         </div>
 
-        <div className="bg-white p-8 rounded-lg shadow-lg">
-          <div className="grid grid-cols-3 gap-2 w-80 h-80">
-            {Array.from({ length: 9 }).map((_, index) => (
-              <button
-                key={index}
-                className="bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center justify-center text-4xl font-bold text-gray-700 transition-colors"
-              >
-                {/* Cell content will be managed by game logic */}
-              </button>
-            ))}
-          </div>
-        </div>
+        <Board />
 
         <div className="flex gap-4 justify-center">
           <Button variant="secondary" onClick={handleBackHome}>
             Voltar ao Início
           </Button>
-          <Button variant="primary">Reiniciar Jogo</Button>
+          <Button variant="primary" onClick={handleResetGame}>
+            Reiniciar Jogo
+          </Button>
         </div>
       </div>
     </div>
